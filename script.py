@@ -2,11 +2,16 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time 
 
 
 driver_path = '/home/santiago/Descargas/Midas/chromedriver'
 binary_path = '/usr/bin/brave-browser'
+
+desired_capabilities = DesiredCapabilities.CHROME 
+desired_capabilities["goog:loggingPrefs"] = {"performance": "ALL"} 
+  
 
 options = webdriver.ChromeOptions()
 options.binary_location = binary_path
