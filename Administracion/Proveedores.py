@@ -26,12 +26,9 @@ class Proveedores:
             ac = ActionChains(driver)
             ac.move_to_element(pais).move_by_offset(1, 1).click().perform()
             driver.find_element(By.XPATH, '//li[text()="Argentina"]').click()
-            driver.execute_script("arguments[0].value = 'Mendoza';", driver.find_element(by=By.CLASS_NAME, value='css-b52kj1')) 
-            #error escribe pero no guarda
             cdp = driver.find_element(By.XPATH, '//label[text()="Condición de pago"]')
             ac.move_to_element(cdp).move_by_offset(1, 1).click().perform()
-            driver.find_element(By.XPATH, '//li[data-value="CONDITION_30"]').click()
-            #error no hace click
+            driver.find_element(By.XPATH, '//li[@data-value="CONDITION_30"]').click()
 
         #boton crear
         driver.find_element(By.XPATH, '//button[text()="Crear"]').click()
@@ -42,6 +39,7 @@ class Proveedores:
         driver.find_element(By.XPATH, '//a[@href="/provider"]').click()
         #boton lapiz
         driver.find_element(By.XPATH, '//*[@aria-label="Editar"]').click()
+        time.sleep(1)
         #editar campos con los datos recibidos
         if datos:
             for (dato, valor) in datos.items():
@@ -52,17 +50,27 @@ class Proveedores:
                     except:
                         id =  driver.find_element(By.XPATH, f'//label[text()="CUIT"]').get_attribute("for")
                 #obtener id del input según su label
+                elif dato == "País":
+                    ac = ActionChains(driver)
+                    pais = driver.find_element(By.XPATH, '//label[text()="País"]')
+                    ac.move_to_element(pais).move_by_offset(1, 1).click().perform()
+                    driver.find_element(By.XPATH, f'//li[text()="{valor}"]').click()
+                elif dato == "Condición de pago":
+                    ac = ActionChains(driver)
+                    driver.find_element(By.XPATH, '//div[contains(@class, "MuiSelect-select") and (contains(text(), "días") or contains(text(), "Otra"))]').click()
+                    driver.find_element(By.XPATH, f'//li[text()="{valor}"]').click()
                 else:
+                    print(dato, valor)
                     id =  driver.find_element(By.XPATH, f'//label[text()="{dato}"]').get_attribute("for")
-                #borrar el texto existente
-                element = driver.find_element(by=By.ID, value=id)
-                value = element.get_attribute("value")
-                element.send_keys(Keys.BACK_SPACE for _ in range(len(value)))
-                #escribir el nuevo texto
-                element.send_keys(valor)
+                    #borrar el texto existente
+                    element = driver.find_element(by=By.ID, value=id)
+                    value = element.get_attribute("value")
+                    element.send_keys(Keys.BACK_SPACE for _ in range(len(value)))
+                    #escribir el nuevo texto
+                    element.send_keys(valor)
         #editar campo de ejemplo
         else:
-            element = driver.find_element(by=By.ID, value=':r14:')
+            element = driver.find_element(by=By.ID, value=':ro:')
             #borrar el texto existente
             value = element.get_attribute("value")
             element.send_keys(Keys.BACK_SPACE for _ in range(len(value)))
@@ -78,7 +86,6 @@ class Proveedores:
         driver.find_element(By.XPATH, '//a[@href="/provider"]').click()
         #boton eliminar
         driver.find_element(By.XPATH, '//*[@aria-label="Eliminar"]').click()
-        time.sleep(10)
         #confirmar
         driver.find_element(By.XPATH, '//button[text()="Eliminar"]').click()
         for request in driver.requests:
