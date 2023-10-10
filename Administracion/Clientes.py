@@ -4,30 +4,9 @@ from selenium.webdriver.common.keys import Keys
 import time 
 
 class Clientes:
-    '''address = ""
-    approved = False	
-    business_name =	""
-    city =	""	
-    contact = ""	
-    deleted = False	
-    enrolled_in_gross_income =	False	
-    fantasy_name =	""	
-    iva_condition =	""	
-    mail1 =	""	
-    mail2 =	""	
-    msc_code =	""	
-    observations =	""	
-    phone_number =	""	
-    postal_code = 0	
-    role = 0	
-    tax_identification_number =	""	
-    tax_identification_type =	""	
-    country_id = 0	
-    province_id = 0	
-    include_in_tariff =	False	
+    campos = ["address","approved	","business_name","city	","contact	","deleted	","enrolled_in_gross_income	","fantasy_name	","iva_condition	","mail1	","mail2	","msc_code	","observations	","phone_number	","postal_code	","role	","tax_identification_number	","tax_identification_type	","country_id	","province_id	","include_in_tariff"]
+    campos_obligatorios = ["approved", "business_name", "mail1", "tax_identification_type", "tax_identification_number"]
 
-    campos_obligatorios = [approved, business_name, mail1, tax_identification_type, tax_identification_number]
-'''
     @staticmethod
     def crear(driver, datos={}):
         #entrar a pestaña clientes
@@ -95,7 +74,7 @@ class Clientes:
         #confirmar
         driver.find_element(By.XPATH, '//button[text()="Eliminar"]').click()
         for request in driver.requests:
-            if request.method == 'DELETE' and request.response:
+            if request.response and request.response.status_code > 200:
                 print(request.url)
                 print(request.method)
                 print(request.response.status_code)

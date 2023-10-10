@@ -4,6 +4,9 @@ from selenium.webdriver.common.action_chains import ActionChains
 import time 
 
 class Proveedores:
+    campos = ["address","approved	","business_name","city	","contact	","deleted	","enrolled_in_gross_income	","fantasy_name	","iva_condition	","mail1	","mail2	","msc_code	","observations	","phone_number	","postal_code	","role	","tax_identification_number	","tax_identification_type	","country_id	","province_id	","include_in_tariff"]
+    campos_obligatorios = ["approved", "business_name", "mail1", "tax_identification_type", "tax_identification_number"]
+
     @staticmethod
     def crear(driver, datos={}):
         #entrar a pestaña proveedores
