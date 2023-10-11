@@ -1,11 +1,10 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-
-import time 
+import time, json
 
 class Clientes:
-    campos = ["address","approved	","business_name","city	","contact	","deleted	","enrolled_in_gross_income	","fantasy_name	","iva_condition	","mail1	","mail2	","msc_code	","observations	","phone_number	","postal_code	","role	","tax_identification_number	","tax_identification_type	","country_id	","province_id	","include_in_tariff"]
-    campos_obligatorios = ["approved", "business_name", "mail1", "tax_identification_type", "tax_identification_number"]
+    campos = ["Dirección","Razón social","Ciudad","Contacto","Alias","E-mail","E-mail opcional","Código MSC-Link","Comentario","Teléfono","Código postal","CUIT","Tipo de clave tributaria","País","Provincia"]
+    campos_obligatorios = ["Razón social", "E-mail", "CUIT", "Teléfono"]
 
     @staticmethod
     def crear(driver, datos={}):
@@ -27,6 +26,15 @@ class Clientes:
             driver.find_element(by=By.ID, value=':r1a:').send_keys('12345')
         #boton crear
         driver.find_element(By.XPATH, '//button[text()="Crear"]').click()
+        time.sleep(1.5)
+        for request in driver.requests:
+            if request.method == 'POST' and 'clients' in request.url:
+                respuesta = {"URL": request.url,"Method": request.method, "Status code": request.response.status_code, "Response": str(request.response.body.decode("utf-8"))}
+                respuesta_str = ''
+                for (k,v) in respuesta.items():
+                    respuesta_str = respuesta_str + f'{k.ljust(20)}{v}\n'
+                return respuesta_str
+
 
     @staticmethod
     def editar(driver, datos={}):
@@ -63,20 +71,40 @@ class Clientes:
             element.send_keys("prueba")
         time.sleep(1)
         driver.find_element(By.XPATH, '//button[text()="Guardar"]').click()
+        time.sleep(1.5)
+        for request in driver.requests:
+            if request.method == 'PUT':
+                respuesta = {"URL": request.url,"Method": request.method, "Status code": request.response.status_code, "Response": str(request.response.body.decode("utf-8"))}
+                respuesta_str = ''
+                for (k,v) in respuesta.items():
+                    respuesta_str = respuesta_str + f'{k.ljust(20)}{v}\n'
+                return respuesta_str
 
     @staticmethod
-    def eliminar(driver):
+    def eliminar(driver, datos={}):
         #entrar a pestaña clientes
         driver.find_element(By.XPATH, '//a[@href="/customer"]').click()
         #boton eliminar
         driver.find_element(By.XPATH, '//*[@aria-label="Eliminar"]').click()
-        #time.sleep(1)
         #confirmar
         driver.find_element(By.XPATH, '//button[text()="Eliminar"]').click()
+        time.sleep(1.5)
         for request in driver.requests:
-            if request.response and request.response.status_code > 200:
-                print(request.url)
-                print(request.method)
-                print(request.response.status_code)
-                print(request.response.body.splitlines())
+            if request.method == 'DELETE':
+                respuesta = {"URL": request.url,"Method": request.method, "Status code": request.response.status_code, "Response": str(request.response.body.decode("utf-8"))}
+                respuesta_str = ''
+                for (k,v) in respuesta.items():
+                    respuesta_str = respuesta_str + f'{k.ljust(20)}{v}\n'
+                return respuesta_str
+            
+    @staticmethod
+    def get_campos(all=False):
+        campos = {}
+        if not all:
+            for c in Clientes.campos_obligatorios:
+                campos[c] = ' '
+        else:
+            for c in Clientes.campos:
+                campos[c] = ' '
+        return json.dumps(campos).replace('{', '{\n').replace('}', '\n}').replace(',',',\n')
                 
