@@ -24,6 +24,8 @@ class Clientes:
         driver.find_element(By.XPATH, '//button[text()="Crear nuevo"]').click()
         #mapear los datos para encontrar id y enviar valor
         for (campo, valor) in datos.items():
+            if valor == 'blanco':
+                  valor = ''
             id =  driver.find_element(By.XPATH, f'//label[text()="{campo}"]').get_attribute("for")
             driver.find_element(by=By.ID, value=id).send_keys(valor)
         #botón crear

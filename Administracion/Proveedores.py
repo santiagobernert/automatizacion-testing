@@ -26,6 +26,8 @@ class Proveedores:
         driver.find_element(By.XPATH, '//button[text()="Crear nuevo"]').click()
         #mapear los datos para encontrar id y enviar valor
         for (campo, valor) in datos.items():
+            if valor == 'blanco':
+                  valor = ''
             if campo == "País":
                 ac = ActionChains(driver)
                 pais = driver.find_element(By.XPATH, '//label[text()="País"]')
