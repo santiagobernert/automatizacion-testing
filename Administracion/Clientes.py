@@ -34,7 +34,6 @@ class Clientes:
         for request in driver.requests:
             if request.method == 'POST' and 'clients' in request.url:
                 respuesta = (request.url, request.method, request.response.status_code, str(request.response.body.decode("utf-8")))
-                print(respuesta)
                 return respuesta
         return '', '', '0', 'No se pudo crear, error en los campos'
 

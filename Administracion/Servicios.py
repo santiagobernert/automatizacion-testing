@@ -3,40 +3,52 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 import time, json
 
-class Proveedores:
-    campos = ["Domicilio","Razón social","Ciudad","Contacto","Alias","E-mail","E-mail opcional","Condición de pago","Comentario","Teléfono","Código postal","CUIT","Tipo de clave tributaria","País","Provincia", "Condición frente a IVA"]
-    campos_obligatorios = ["Razón social", "E-mail", "CUIT", "Teléfono", "País"]
+class Servicios:
+    campos = ["Código", "Concepto", "Definición", "Subcategoría", "Aplicable a", "Unidad de medida", "MSC charge code", "MEDLOG charge code", "MSC ARG charge code", "Comentario"]
+    campos_obligatorios = ["Código", "Concepto", "Definición", "Subcategoría", "Aplicable a", "Unidad de medida", "MSC charge code", "MSC ARG charge code", "MEDLOG charge code"]
 
     @staticmethod
     def crear(driver, datos_modificados):
         datos={
-        'Razón social': 'ejemplo',
-        'Alias': 'alias',
-        'CUIT': '21-22231223-4',
-        'E-mail': 'e@g.com',
-        'Teléfono': '12345',
-        'País': 'Argentina'
+        "Código": "aa11",
+        "Concepto": "prueba",
+        "Definición": "prueba de servicio",
+        "Subcategoría": "Intermodal",
+        "Aplicable a": "Mercadería",
+        "Unidad de medida": "Camión",
+        "MSC charge code": "abc",
+        "MSC ARG charge code": "a12",
+        "MEDLOG charge code": "abcd12",
         }
         if datos_modificados:
             for (k,v) in datos.items():
                 datos[k] = v
-        #entrar a pestaña Proveedores
-        driver.find_element(By.XPATH, '//a[@href="/provider"]').click()
+        #entrar a pestaña Servicios
+        driver.find_element(By.XPATH, '//a[@href="/additional-services"]').click()
         #boton crear cliente
         driver.find_element(By.XPATH, '//button[text()="Crear nuevo"]').click()
         #mapear los datos para encontrar id y enviar valor
         for (campo, valor) in datos.items():
             if valor == 'blanco':
                   valor = ''
-            if campo == "País":
-                ac = ActionChains(driver)
-                pais = driver.find_element(By.XPATH, '//label[text()="País"]')
-                ac.move_to_element(pais).move_by_offset(1, 1).click().perform()
+            ac = ActionChains(driver)
+            if campo == "Aplicable a":
+                elemento = driver.find_element(By.XPATH, '//label[text()="Aplicable a"]')
+                ac.move_to_element(elemento).move_by_offset(1, 1).click().perform()
                 driver.find_element(By.XPATH, f'//li[text()="{valor}"]').click()
-            elif campo == "Condición de pago":
-                    ac = ActionChains(driver)
-                    driver.find_element(By.XPATH, '//div[contains(@class, "MuiSelect-select") and (contains(text(), "días") or contains(text(), "Otra"))]').click()
-                    driver.find_element(By.XPATH, f'//li[text()="{valor}"]').click()
+            
+            elif campo == "Subcategoría":
+                elemento = driver.find_element(By.XPATH, '//label[text()="Subcategoría"]')
+                ac.move_to_element(elemento).move_by_offset(1, 1).click().perform()
+                driver.find_element(By.XPATH, f'//span[text()="{valor}"]').click()
+                ac.move_to_element(driver.find_element(By.XPATH, '//label[text()="Código"]')).move_by_offset(1, 1).click().perform()
+
+            elif campo == "Unidad de medida":
+                elemento = driver.find_element(By.XPATH, '//label[text()="Unidad de medida"]')
+                ac.move_to_element(elemento).move_by_offset(1, 1).click().perform()
+                driver.find_element(By.XPATH, f'//span[text()="{valor}"]').click()
+                ac.move_to_element(driver.find_element(By.XPATH, '//label[text()="Código"]')).move_by_offset(1, 1).click().perform()
+            
             else:
                 id =  driver.find_element(By.XPATH, f'//label[text()="{campo}"]').get_attribute("for")
                 driver.find_element(by=By.ID, value=id).send_keys(valor)
@@ -44,7 +56,7 @@ class Proveedores:
         driver.find_element(By.XPATH, '//button[text()="Crear"]').click()
         time.sleep(1.5)
         for request in driver.requests:
-            if request.method == 'POST' and 'providers' in request.url:
+            if request.method == 'POST' and 'additional-services' in request.url:
                 respuesta = (request.url, request.method, request.response.status_code, str(request.response.body.decode("utf-8")))
                 return respuesta
         return '', '', '0', 'No se pudo crear, error en los campos'
@@ -52,8 +64,8 @@ class Proveedores:
 
     @staticmethod
     def editar(driver, datos={}):
-        #entrar a pestaña Proveedores
-        driver.find_element(By.XPATH, '//a[@href="/provider"]').click()
+        #entrar a pestaña Servicios
+        driver.find_element(By.XPATH, '//a[@href="/additional-services"]').click()
         #boton lapiz
         driver.find_element(By.XPATH, '//*[@aria-label="Editar"]').click()
         #editar campos con los datos recibidos
@@ -62,22 +74,22 @@ class Proveedores:
                 #setear valor en blanco
                 if valor == 'blanco':
                   valor = ''
-                #antes de completar el CUIT, intentar con tipo de clave tributaria = Otra
-                if campo == "CUIT":
-                    try:
-                        id =  driver.find_element(By.XPATH, f'//label[text()="OTHER"]').get_attribute("for")
-                    except:
-                        id =  driver.find_element(By.XPATH, f'//label[text()="CUIT"]').get_attribute("for")
-                elif campo == "País":
-                    ac = ActionChains(driver)
-                    pais = driver.find_element(By.XPATH, '//label[text()="País"]')
-                    ac.move_to_element(pais).move_by_offset(1, 1).click().perform()
+                ac = ActionChains(driver)
+                if campo == "Aplicable a":
+                    elemento = driver.find_element(By.XPATH, '//label[text()="Aplicable a"]')
+                    ac.move_to_element(elemento).move_by_offset(1, 1).click().perform()
                     driver.find_element(By.XPATH, f'//li[text()="{valor}"]').click()
-                elif campo == "Condición de pago":
-                    ac = ActionChains(driver)
-                    driver.find_element(By.XPATH, '//div[contains(@class, "MuiSelect-select") and (contains(text(), "días") or contains(text(), "Otra"))]').click()
-                    driver.find_element(By.XPATH, f'//li[text()="{valor}"]').click()
-                #obtener id del input según su label
+                
+                elif campo == "Subcategoría":
+                    elemento = driver.find_element(By.XPATH, '//label[text()="Subcategoría"]')
+                    ac.move_to_element(elemento).move_by_offset(1, 1).click().perform()
+                    driver.find_element(By.XPATH, f'//span[text()="{valor}"]').click()
+                
+                elif campo == "Unidad de medida":
+                    elemento = driver.find_element(By.XPATH, '//label[text()="Unidad de medida"]')
+                    ac.move_to_element(elemento).move_by_offset(1, 1).click().perform()
+                    driver.find_element(By.XPATH, f'//span[text()="{valor}"]').click()
+                
                 else:
                     id =  driver.find_element(By.XPATH, f'//label[text()="{campo}"]').get_attribute("for")
                 #borrar el texto existente
@@ -89,7 +101,7 @@ class Proveedores:
                 element.send_keys(valor)
         #editar campo de ejemplo
         else:
-            id =  driver.find_element(By.XPATH, f'//label[text()="Alias"]').get_attribute("for")
+            id =  driver.find_element(By.XPATH, f'//label[text()="Concepto"]').get_attribute("for")
             element = driver.find_element(By.ID, id)
             #borrar el texto existente
             value = element.get_attribute("value")
@@ -107,8 +119,8 @@ class Proveedores:
 
     @staticmethod
     def eliminar(driver, datos={}):
-        #entrar a pestaña Proveedores
-        driver.find_element(By.XPATH, '//a[@href="/provider"]').click()
+        #entrar a pestaña Servicios
+        driver.find_element(By.XPATH, '//a[@href="/additional-services"]').click()
         #boton eliminar
         driver.find_element(By.XPATH, '//*[@aria-label="Eliminar"]').click()
         #confirmar
@@ -124,10 +136,10 @@ class Proveedores:
     def get_campos(all=False):
         campos = {}
         if not all:
-            for c in Proveedores.campos_obligatorios:
+            for c in Servicios.campos_obligatorios:
                 campos[c] = ''
         else:
-            for c in Proveedores.campos:
+            for c in Servicios.campos:
                 campos[c] = ''
         return json.dumps(campos, ensure_ascii=False).replace('{', '{\n').replace('}', '\n}').replace(',',',\n')
                 

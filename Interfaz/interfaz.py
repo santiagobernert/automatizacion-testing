@@ -25,7 +25,7 @@ class Testing:
         self.modulo_dropdown.grid(row=1, column=0, padx=0, pady=5, sticky="e")
 
         # Dropdown para seleccionar el submódulo (si se selecciona Administración)
-        self.submodulos = ["Clientes", "Proveedores", "Usuarios", "Servicios Adicionales", "Ciudades", "Transporte", "Condiciones generales"]
+        self.submodulos = ["Clientes", "Proveedores", "Usuarios", "Servicios", "Ciudades", "Transporte", "Condiciones"]
         self.submodulo_var = tk.StringVar()
         self.submodulo_dropdown = ctk.CTkOptionMenu(self.root, values=self.submodulos, command=self.update_data)
         self.submodulo_dropdown.grid(row=1, column=1, padx=0, pady=5)
@@ -39,7 +39,7 @@ class Testing:
         # Campo de texto para ingresar datos
         self.datos_label = ctk.CTkLabel(self.root, text="Datos:")
         self.datos_label.grid(row=2, column=1, padx=0, pady=1)
-        self.datos_entry = ctk.CTkTextbox(self.root, width=350, height=170)
+        self.datos_entry = ctk.CTkTextbox(self.root, width=350, height=100)
         self.update_data(self.submodulo_dropdown.get())
         self.datos_entry.grid(row=3, column=0, columnspan=3, padx=10, pady=5)
 
@@ -59,7 +59,7 @@ class Testing:
         self.respuesta_label = ctk.CTkLabel(self.root, text="Response:")
         self.respuesta_label.grid(row=8, column=1, padx=0, pady=1)
         # Campo de texto de solo lectura para mostrar la respuesta
-        self.respuesta_text = ctk.CTkTextbox(self.root, height=100, width=490)
+        self.respuesta_text = ctk.CTkTextbox(self.root, height=190, width=490)
         self.respuesta_text.grid(row=9, column=0, columnspan=3, padx=5, pady=5)
 
     def update_data(self, value):
