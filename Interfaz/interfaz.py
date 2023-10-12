@@ -75,8 +75,7 @@ class Testing:
         modulo = import_module(f".{self.submodulo_dropdown.get()}", f"Administracion")
         clase = getattr(modulo, self.submodulo_dropdown.get())
         obj = clase()
-
-
+        
         #Checkear si hay datos ingresados, si no hay, enviar los datos por defecto
         datos_modificados = json.loads(self.datos_entry.get("0.0", "999.999")) if self.datos_entry.get("0.0", "999.999") != obj.get_campos() else {}
         datos = {k:v for k,v in datos_modificados.items() if v}
@@ -92,7 +91,7 @@ class Testing:
         self.respuesta_text.delete("0.0", "999.999")
         self.respuesta_text.insert("0.0", response)
         self.respuesta_text.configure(state='disabled')
-
+    
     def run(self):
         self.root.mainloop()
     
