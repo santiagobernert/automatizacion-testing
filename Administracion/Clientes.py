@@ -80,6 +80,7 @@ class Clientes:
             if request.method == 'PUT':
                 respuesta = (request.url, request.method, request.response.status_code, str(request.response.body.decode("utf-8")))
                 return respuesta
+        return '', '', '0', 'No se pudo editar, error en los campos'
 
     @staticmethod
     def eliminar(driver, datos={}):
@@ -94,6 +95,7 @@ class Clientes:
             if request.method == 'DELETE':
                 respuesta = (request.url, request.method, request.response.status_code, str(request.response.body.decode("utf-8")))
                 return respuesta
+        return '', '', '0', 'No se pudo eliminar'
             
     @staticmethod
     def get_campos(all=False):
