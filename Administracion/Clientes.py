@@ -100,9 +100,9 @@ class Clientes:
         campos = {}
         if not all:
             for c in Clientes.campos_obligatorios:
-                campos[c] = ' '
+                campos[c] = ''
         else:
             for c in Clientes.campos:
-                campos[c] = ' '
+                campos[c] = ''
         return json.dumps(campos, ensure_ascii=False).replace('{', '{\n').replace('}', '\n}').replace(',',',\n')
                 
