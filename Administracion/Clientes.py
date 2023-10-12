@@ -7,33 +7,34 @@ class Clientes:
     campos_obligatorios = ["Razón social", "E-mail", "CUIT", "Teléfono"]
 
     @staticmethod
-    def crear(driver, datos={}):
+    def crear(driver, datos_modificados):
+        datos={
+        'Razón social': 'ejemplo',
+        'Alias': 'alias',
+        'CUIT': '21-22231223-4',
+        'E-mail': 'e@g.com',
+        'Teléfono': '12345',
+        }
+        if datos_modificados:
+            for (k,v) in datos.items():
+                datos[k] = v
         #entrar a pestaña clientes
         driver.find_element(By.XPATH, '//a[@href="/customer"]').click()
         #boton crear cliente
         driver.find_element(By.XPATH, '//button[text()="Crear nuevo"]').click()
         #mapear los datos para encontrar id y enviar valor
-        if datos:
-            for (campo, valor) in datos.items():
-                id =  driver.find_element(By.XPATH, f'//label[text()="{campo}"]').get_attribute("for")
-                driver.find_element(by=By.ID, value=id).send_keys(valor)
-        else:
-        #completar con datos de ejemplo
-            driver.find_element(by=By.ID, value=':r15:').send_keys('ejemplo')
-            driver.find_element(by=By.ID, value=':r16:').send_keys('alias')
-            driver.find_element(by=By.ID, value=':r17:').send_keys('21-22231223-4')
-            driver.find_element(by=By.ID, value=':r18:').send_keys('e@g.com')
-            driver.find_element(by=By.ID, value=':r1a:').send_keys('12345')
-        #boton crear
+        for (campo, valor) in datos.items():
+            id =  driver.find_element(By.XPATH, f'//label[text()="{campo}"]').get_attribute("for")
+            driver.find_element(by=By.ID, value=id).send_keys(valor)
+        #botón crear
         driver.find_element(By.XPATH, '//button[text()="Crear"]').click()
         time.sleep(1.5)
         for request in driver.requests:
             if request.method == 'POST' and 'clients' in request.url:
-                respuesta = {"URL": request.url,"Method": request.method, "Status code": request.response.status_code, "Response": str(request.response.body.decode("utf-8"))}
-                respuesta_str = ''
-                for (k,v) in respuesta.items():
-                    respuesta_str = respuesta_str + f'{k.ljust(20)}{v}\n'
-                return respuesta_str
+                respuesta = (request.url, request.method, request.response.status_code, str(request.response.body.decode("utf-8")))
+                print(respuesta)
+                return respuesta
+        return '', '', '0', 'No se pudo crear, error en los campos'
 
 
     @staticmethod
@@ -45,6 +46,9 @@ class Clientes:
         #editar campos con los datos recibidos
         if datos:
             for (dato, valor) in datos.items():
+                #setear valor en blanco
+                if valor == 'blanco':
+                  valor = ''
                 #antes de completar el CUIT, intentar con tipo de clave tributaria = Otra
                 if dato == "CUIT":
                     try:
@@ -74,11 +78,8 @@ class Clientes:
         time.sleep(1.5)
         for request in driver.requests:
             if request.method == 'PUT':
-                respuesta = {"URL": request.url,"Method": request.method, "Status code": request.response.status_code, "Response": str(request.response.body.decode("utf-8"))}
-                respuesta_str = ''
-                for (k,v) in respuesta.items():
-                    respuesta_str = respuesta_str + f'{k.ljust(20)}{v}\n'
-                return respuesta_str
+                respuesta = (request.url, request.method, request.response.status_code, str(request.response.body.decode("utf-8")))
+                return respuesta
 
     @staticmethod
     def eliminar(driver, datos={}):
@@ -91,11 +92,8 @@ class Clientes:
         time.sleep(1.5)
         for request in driver.requests:
             if request.method == 'DELETE':
-                respuesta = {"URL": request.url,"Method": request.method, "Status code": request.response.status_code, "Response": str(request.response.body.decode("utf-8"))}
-                respuesta_str = ''
-                for (k,v) in respuesta.items():
-                    respuesta_str = respuesta_str + f'{k.ljust(20)}{v}\n'
-                return respuesta_str
+                respuesta = (request.url, request.method, request.response.status_code, str(request.response.body.decode("utf-8")))
+                return respuesta
             
     @staticmethod
     def get_campos(all=False):
@@ -106,5 +104,5 @@ class Clientes:
         else:
             for c in Clientes.campos:
                 campos[c] = ' '
-        return json.dumps(campos).replace('{', '{\n').replace('}', '\n}').replace(',',',\n')
+        return json.dumps(campos, ensure_ascii=False).replace('{', '{\n').replace('}', '\n}').replace(',',',\n')
                 

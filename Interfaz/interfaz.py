@@ -47,11 +47,20 @@ class Testing:
         self.probar_button = ctk.CTkButton(self.root, text="Probar", command=self.probar)
         self.probar_button.grid(row=4, column=1, padx=0, pady=5)
 
-        self.respuesta_label = ctk.CTkLabel(self.root, text="Respuesta:")
-        self.respuesta_label.grid(row=5, column=1, padx=0, pady=1)
+        self.url_label = ctk.CTkLabel(self.root, text="URL:")
+        self.url_label.grid(row=5, column=0, columnspan=3, padx=0, pady=1)
+
+        self.method_label = ctk.CTkLabel(self.root, text="Method:")
+        self.method_label.grid(row=6, column=1, padx=0, pady=1)
+
+        self.status_label = ctk.CTkLabel(self.root, text="Status:")
+        self.status_label.grid(row=7, column=1, padx=0, pady=1)
+
+        self.respuesta_label = ctk.CTkLabel(self.root, text="Response:")
+        self.respuesta_label.grid(row=8, column=1, padx=0, pady=1)
         # Campo de texto de solo lectura para mostrar la respuesta
-        self.respuesta_text = ctk.CTkTextbox(self.root, height=200, width=490)
-        self.respuesta_text.grid(row=6, column=0, columnspan=3, padx=5, pady=5)
+        self.respuesta_text = ctk.CTkTextbox(self.root, height=100, width=490)
+        self.respuesta_text.grid(row=9, column=0, columnspan=3, padx=5, pady=5)
 
     def update_data(self, value):
         modulo = import_module(f".{value}", f"Administracion")
@@ -62,17 +71,28 @@ class Testing:
 
     # Función que se ejecutará al hacer clic en el botón "Probar"
     def probar(self):
+        #Crear un objeto de la clase seleccionada
         modulo = import_module(f".{self.submodulo_dropdown.get()}", f"Administracion")
         clase = getattr(modulo, self.submodulo_dropdown.get())
         obj = clase()
-        datos_modificados = json.loads(self.datos_entry.get("0.0", "999.999")) if json.loads(self.datos_entry.get("0.0", "999.999")) != obj.get_campos() else None
+
+
+        #Checkear si hay datos ingresados, si no hay, enviar los datos por defecto
+        datos_modificados = json.loads(self.datos_entry.get("0.0", "999.999")) if self.datos_entry.get("0.0", "999.999") != obj.get_campos() else {}
+        datos = {k:v for k,v in datos_modificados.items() if v}
         accion = getattr(obj, self.accion_dropdown.get().lower())
-        respuesta = self.start(self.driver, accion, datos_modificados if datos_modificados else {})
-        self.respuesta_text.insert("0.0", respuesta)
+        #obtenemos la respuesta
+        url, method, status, response = self.start(self.driver, accion, datos if datos else None)
+
+        #escribir labels
+        self.url_label.configure(text=f"URL: {url}")
+        self.method_label.configure(text=f"Method: {method}")
+        self.status_label.configure(text=f"Status: {status}", bg_color='red' if int(status) >= 400 else 'green' if int(status) < 300 and int(status) >= 200 else 'orange', text_color='white', width=150)
+        self.respuesta_text.configure(state='normal')
+        self.respuesta_text.delete("0.0", "999.999")
+        self.respuesta_text.insert("0.0", response)
         self.respuesta_text.configure(state='disabled')
 
-    def get(self):
-        return self.root
-    # Ejecutar la ventana principal
-    #root.mainloop()
+    def run(self):
+        self.root.mainloop()
     
