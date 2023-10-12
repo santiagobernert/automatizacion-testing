@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-import time 
+import time,json
 
 class Proveedores:
     campos = ["address","approved	","business_name","city	","contact	","deleted	","enrolled_in_gross_income	","fantasy_name	","iva_condition	","mail1	","mail2	","msc_code	","observations	","phone_number	","postal_code	","role	","tax_identification_number	","tax_identification_type	","country_id	","province_id	","include_in_tariff"]
@@ -96,3 +96,15 @@ class Proveedores:
                 print(request.url)
                 print(request.response.status_code)
                 print(request.response.body)
+
+    @staticmethod
+    def get_campos(all=False):
+        campos = {}
+        if not all:
+            for c in Proveedores.campos_obligatorios:
+                campos[c] = ' '
+        else:
+            for c in Proveedores.campos:
+                campos[c] = ' '
+        return json.dumps(campos).replace('{', '{\n').replace('}', '\n}').replace(',',',\n')
+                
