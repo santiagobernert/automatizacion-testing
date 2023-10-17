@@ -98,7 +98,7 @@ class Transporte:
                 element.send_keys(valor)
         #editar campo de ejemplo
         else:
-            id =  driver.find_element(By.XPATH, f'//label[text()="Concepto"]').get_attribute("for")
+            id =  driver.find_element(By.XPATH, f'//label[text()="Definición"]').get_attribute("for")
             element = driver.find_element(By.ID, id)
             #borrar el texto existente
             value = element.get_attribute("value")

@@ -25,7 +25,7 @@ class Testing:
         self.modulo_dropdown.grid(row=1, column=0, padx=0, pady=5, sticky="e")
 
         # Dropdown para seleccionar el submódulo (si se selecciona Administración)
-        self.submodulos = ["Clientes", "Proveedores", "Usuarios", "Servicios", "Ciudades", "Transporte", "Condiciones"]
+        self.submodulos = ["Clientes", "Proveedores", "Usuarios", "Servicios", "Ciudades", "Transporte"]
         self.submodulo_var = tk.StringVar()
         self.submodulo_dropdown = ctk.CTkOptionMenu(self.root, values=self.submodulos, command=self.update_data)
         self.submodulo_dropdown.grid(row=1, column=1, padx=0, pady=5)
