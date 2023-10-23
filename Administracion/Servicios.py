@@ -23,6 +23,8 @@ class Servicios:
         if datos_modificados:
             for (k,v) in datos.items():
                 datos[k] = v
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
         #entrar a pestaña Servicios
         driver.find_element(By.XPATH, '//a[@href="/additional-services"]').click()
         #boton crear cliente
@@ -64,6 +66,8 @@ class Servicios:
 
     @staticmethod
     def editar(driver, datos={}):
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
         #entrar a pestaña Servicios
         driver.find_element(By.XPATH, '//a[@href="/additional-services"]').click()
         #boton lapiz
@@ -119,6 +123,8 @@ class Servicios:
 
     @staticmethod
     def eliminar(driver, datos={}):
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
         #entrar a pestaña Servicios
         driver.find_element(By.XPATH, '//a[@href="/additional-services"]').click()
         #boton eliminar

@@ -19,15 +19,16 @@ class Testing:
         self.titulo_label.grid(row=0, columnspan=3, padx=0, pady=15)
 
         # Dropdown para seleccionar el módulo (Administración o Cotizaciones)
-        self.modulos = ["Administración", "Cotizaciones"]
+        self.modulos = ["Administracion", "Cotizaciones"]
         self.modulo_var = tk.StringVar()
-        self.modulo_dropdown = ctk.CTkOptionMenu(self.root, values=self.modulos)
+        self.modulo_dropdown = ctk.CTkOptionMenu(self.root, values=self.modulos, command=self.update_submodules)
         self.modulo_dropdown.grid(row=1, column=0, padx=0, pady=5, sticky="e")
 
         # Dropdown para seleccionar el submódulo (si se selecciona Administración)
-        self.submodulos = ["Clientes", "Proveedores", "Usuarios", "Servicios", "Ciudades", "Transporte"]
+        self.administracion_submodulos = ["Clientes", "Proveedores", "Usuarios", "Servicios", "Ciudades", "Transporte"]
+        self.cotizaciones_submodulos = ["Datos", "CompraVenta", "Exportacion",]
         self.submodulo_var = tk.StringVar()
-        self.submodulo_dropdown = ctk.CTkOptionMenu(self.root, values=self.submodulos, command=self.update_data)
+        self.submodulo_dropdown = ctk.CTkOptionMenu(self.root, values=getattr(self, f"{self.modulo_dropdown.get().lower()}_submodulos"), command=self.update_data)
         self.submodulo_dropdown.grid(row=1, column=1, padx=0, pady=5)
 
         # Dropdown para seleccionar la acción
@@ -63,16 +64,19 @@ class Testing:
         self.respuesta_text.grid(row=9, column=0, columnspan=3, padx=5, pady=5)
 
     def update_data(self, value):
-        modulo = import_module(f".{value}", f"Administracion")
+        modulo = import_module(f".{value}", self.modulo_dropdown.get())
         clase = getattr(modulo, value)
         obj = clase()
         self.datos_entry.delete("0.0", "999.999")
         self.datos_entry.insert("0.0", obj.get_campos() if obj.get_campos() else value)
 
+    def update_submodules(self, value):
+        self.submodulo_dropdown.configure(values=getattr(self, f"{value.lower()}_submodulos"))
+
     # Función que se ejecutará al hacer clic en el botón "Probar"
     def probar(self):
         #Crear un objeto de la clase seleccionada
-        modulo = import_module(f".{self.submodulo_dropdown.get()}", f"Administracion")
+        modulo = import_module(f".{self.submodulo_dropdown.get()}", f"{self.modulo_dropdown.get()}")
         clase = getattr(modulo, self.submodulo_dropdown.get())
         obj = clase()
         

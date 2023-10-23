@@ -25,9 +25,6 @@ def test(driver, accion, datos):
     #abrir menu
     driver.find_element(by=By.CLASS_NAME, value='css-13gjbs7').click()
 
-    #desplegar el menu administracion
-    driver.find_element(By.XPATH, '//span[text()="Administración"]').click()
-
     respuesta = accion(driver, datos)
     return respuesta
 

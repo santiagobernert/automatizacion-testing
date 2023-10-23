@@ -21,6 +21,9 @@ class Usuarios:
         if datos_modificados:
             for (k,v) in datos.items():
                 datos[k] = v
+
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click()        
         #entrar a pestaña Usuarios
         driver.find_element(By.XPATH, '//a[@href="/user"]').click()
         #boton crear cliente
@@ -57,6 +60,8 @@ class Usuarios:
 
     @staticmethod
     def editar(driver, datos={}):
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
         #entrar a pestaña Usuarios
         driver.find_element(By.XPATH, '//a[@href="/user"]').click()
         #boton lapiz
@@ -108,6 +113,8 @@ class Usuarios:
 
     @staticmethod
     def eliminar(driver, datos={}):
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
         #entrar a pestaña Usuarios
         driver.find_element(By.XPATH, '//a[@href="/user"]').click()
         #boton eliminar

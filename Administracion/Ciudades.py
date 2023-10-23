@@ -19,6 +19,8 @@ class Ciudades:
         if datos_modificados:
             for (k,v) in datos.items():
                 datos[k] = v
+       #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
         #entrar a pestaña Ciudades
         driver.find_element(By.XPATH, '//a[@href="/cities"]').click()
         #boton crear cliente
@@ -47,6 +49,8 @@ class Ciudades:
 
     @staticmethod
     def editar(driver, datos={}):
+       #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
         #entrar a pestaña Ciudades
         driver.find_element(By.XPATH, '//a[@href="/cities"]').click()
         #boton lapiz
@@ -92,6 +96,8 @@ class Ciudades:
 
     @staticmethod
     def eliminar(driver, datos={}):
+       #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
         #entrar a pestaña Ciudades
         driver.find_element(By.XPATH, '//a[@href="/cities"]').click()
         #boton eliminar

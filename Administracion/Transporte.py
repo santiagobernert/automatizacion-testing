@@ -10,7 +10,9 @@ class Transporte:
 
     @staticmethod
     def crear(driver, datos_modificados={}):
-        #entrar a pestaña clientes
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
+        #entrar a pestaña transporte
         driver.find_element(By.XPATH, '//a[@href="/transport"]').click()
         #boton crear cliente
         driver.find_element(By.XPATH, '//button[text()="Agregar nuevo"]').click()
@@ -61,7 +63,9 @@ class Transporte:
 
     @staticmethod
     def editar(driver, datos={}):
-        #entrar a pestaña clientes
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
+        #entrar a pestaña transporte
         driver.find_element(By.XPATH, '//a[@href="/transport"]').click()
         #boton lapiz
         driver.find_element(By.XPATH, '//*[@aria-label="Editar"]').click()
@@ -116,7 +120,9 @@ class Transporte:
     
     @staticmethod
     def eliminar(driver, datos):
-        #entrar a pestaña clientes
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
+        #entrar a pestaña transporte
         driver.find_element(By.XPATH, '//a[@href="/transport"]').click()
         #boton eliminar
         driver.find_element(By.XPATH, '//*[@aria-label="Eliminar"]').click()

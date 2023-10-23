@@ -18,6 +18,8 @@ class Clientes:
         if datos_modificados:
             for (k,v) in datos.items():
                 datos[k] = v
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
         #entrar a pestaña clientes
         driver.find_element(By.XPATH, '//a[@href="/customer"]').click()
         #boton crear cliente
@@ -40,6 +42,8 @@ class Clientes:
 
     @staticmethod
     def editar(driver, datos={}):
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
         #entrar a pestaña clientes
         driver.find_element(By.XPATH, '//a[@href="/customer"]').click()
         #boton lapiz
@@ -85,6 +89,8 @@ class Clientes:
 
     @staticmethod
     def eliminar(driver, datos={}):
+        #desplegar el menu administracion
+        driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 
         #entrar a pestaña clientes
         driver.find_element(By.XPATH, '//a[@href="/customer"]').click()
         #boton eliminar
