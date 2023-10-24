@@ -25,7 +25,6 @@ class Datos:
         "MTY PICK UP": "IMPORTACION",
 
         }
-        print(f"{datetime.datetime.now().day}{datetime.datetime.now().month}{datetime.datetime.now().year}")
         if datos_modificados:
             for (k,v) in datos.items():
                 datos[k] = v
@@ -45,25 +44,27 @@ class Datos:
                   valor = ''
             ac = ActionChains(driver)
             if campo == "Fecha Pedido":
-                element = driver.find_elements(By.XPATH, '//button[contains(@aria-label, "Choose date")]')[0]
-                ac.move_to_element(element).click().perform()
+                element = driver.find_elements(By.XPATH, '//button[@aria-label="Choose date"]')[0]
+                ac.move_to_element_with_offset(element, 5, 5).click().perform()
                 element = driver.find_element(By.XPATH, f'//button[text()="{valor}"]')
                 ac.move_to_element(element).click().perform()
-            if campo == "Validez Desde":
-                ac = ActionChains(driver)
-                element = driver.find_elements(By.XPATH, '//button[contains(@aria-label, "Choose date")]')[1]
-                ac.move_to_element(element).move_by_offset(0, 5).click().perform()
-                time.sleep(1)
+            elif campo == "Validez Desde":
+                element = driver.find_elements(By.XPATH, '//button[@aria-label="Choose date"]')[1]
+                ac.move_to_element(element).click().perform()
+                time.sleep(0.5)
                 element = driver.find_element(By.XPATH, f'//button[text()="{valor}"]')
                 ac.move_to_element(element).click().perform()
-                time.sleep(1)
             elif campo == "Validez Hasta":
-                ac = ActionChains(driver)
-                element = driver.find_elements(By.XPATH, '//button[contains(@aria-label, "Choose date")]')[2]
+                driver.implicitly_wait(3)
+                element = driver.find_elements(By.XPATH, '//button[@aria-label="Choose date"]')[1]
                 ac.move_to_element(element).click().perform()
-                time.sleep(1)
                 element = driver.find_element(By.XPATH, f'//button[text()="{valor}"]')
-                ac.move_to_element(element).move_by_offset(0, 15).click().perform()
+                print(element.get_attribute("data-timestamp"))
+                driver.execute_script("arguments[0].setAttribute('aria-selected',arguments[1])",element, "true")
+                WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[text()='24']"))).click()
+                # ac.move_to_element_with_offset(element, 2, 2).click().perform()
+            
+            
             elif campo == "Dirección":
                 element = driver.find_element(By.XPATH, '//label[text()="Dirección"]')
                 ac.move_to_element(element).click().perform()
@@ -81,6 +82,30 @@ class Datos:
                 ac.move_to_element(driver.find_element(By.XPATH, '//label[text()="MTY PICK UP"]')).click().perform()
                 driver.implicitly_wait(2)
                 driver.find_element(By.XPATH, f'//li[text()="{valor}"]').click()
+            elif campo == "Cliente":
+                id = driver.find_element(By.XPATH, f'//label[text()="{campo}"]').get_attribute("for")
+                element = driver.find_element(by=By.ID, value=id)
+                element.send_keys(valor)
+                ac.move_to_element(element).click().perform()
+                element.send_keys(Keys.DOWN)
+                element.send_keys(Keys.RETURN)
+                driver.implicitly_wait(2)
+            elif campo == "Freight Forwarder":
+                id = driver.find_element(By.XPATH, f'//label[text()="{campo}"]').get_attribute("for")
+                element = driver.find_element(by=By.ID, value=id)
+                element.send_keys(valor)
+                ac.move_to_element(element).click().perform()
+                element.send_keys(Keys.DOWN)
+                element.send_keys(Keys.RETURN)
+                driver.implicitly_wait(2)
+            elif campo == "Cliente facturable":
+                id = driver.find_element(By.XPATH, f'//label[text()="{campo}"]').get_attribute("for")
+                element = driver.find_element(by=By.ID, value=id)
+                element.send_keys(valor)
+                ac.move_to_element(element).click().perform()
+                element.send_keys(Keys.DOWN)
+                element.send_keys(Keys.RETURN)
+                driver.implicitly_wait(2)
             else:
                 id =  driver.find_element(By.XPATH, f'//label[text()="{campo}"]').get_attribute("for")
                 driver.find_element(by=By.ID, value=id).send_keys(valor)
@@ -88,7 +113,7 @@ class Datos:
         driver.find_element(By.XPATH, '//button[text()="Guardar"]').click()
         time.sleep(1.5)
         for request in driver.requests:
-            if request.method == 'POST' and 'pricings' in request.url:
+            if request.method == 'POST' and 'quotations' in request.url:
                 respuesta = (request.url, request.method, request.response.status_code, str(request.response.body.decode("utf-8")))
                 return respuesta
         return '', '', '0', 'No se pudo crear, error en los campos'

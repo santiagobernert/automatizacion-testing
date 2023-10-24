@@ -11,7 +11,7 @@ class Clientes:
         datos={
         'Razón social': 'ejemplo',
         'Alias': 'alias',
-        'CUIT': '21-22231223-4',
+        'Clave tributaria (CUIT)': '21-22231223-4',
         'E-mail': 'e@g.com',
         'Teléfono': '12345',
         }
