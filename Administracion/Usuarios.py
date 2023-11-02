@@ -19,7 +19,7 @@ class Usuarios:
         "Contraseña": "Ptest#123",
         }
         if datos_modificados:
-            for (k,v) in datos.items():
+            for (k,v) in datos_modificados.items():
                 datos[k] = v
 
         #desplegar el menu administracion

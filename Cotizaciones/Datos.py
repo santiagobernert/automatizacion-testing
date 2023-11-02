@@ -26,7 +26,7 @@ class Datos:
 
         }
         if datos_modificados:
-            for (k,v) in datos.items():
+            for (k,v) in datos_modificados.items():
                 datos[k] = v
         #desplegar el menu cotizaciones
         driver.find_element(By.XPATH, '//span[text()="Cotizaciones"]').click() 
@@ -55,15 +55,12 @@ class Datos:
                 element = driver.find_element(By.XPATH, f'//button[text()="{valor}"]')
                 ac.move_to_element(element).click().perform()
             elif campo == "Validez Hasta":
+                id = driver.find_element(By.XPATH, f'//label[text()="{campo}"]').get_attribute("for")
+                element = driver.find_element(by=By.ID, value=id)
                 driver.implicitly_wait(3)
                 element = driver.find_elements(By.XPATH, '//button[@aria-label="Choose date"]')[1]
                 ac.move_to_element(element).click().perform()
-                element = driver.find_element(By.XPATH, f'//button[text()="{valor}"]')
-                print(element.get_attribute("data-timestamp"))
-                driver.execute_script("arguments[0].setAttribute('aria-selected',arguments[1])",element, "true")
-                WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[text()='24']"))).click()
-                # ac.move_to_element_with_offset(element, 2, 2).click().perform()
-            
+                WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, f"//button[text()='{valor}']"))).click()
             
             elif campo == "Dirección":
                 element = driver.find_element(By.XPATH, '//label[text()="Dirección"]')

@@ -85,7 +85,7 @@ class Testing:
         datos = {k:v for k,v in datos_modificados.items() if v}
         accion = getattr(obj, self.accion_dropdown.get().lower())
         #obtenemos la respuesta
-        url, method, status, response = self.start(self.driver, accion, datos if datos else None)
+        url, method, status, response = self.start(self.driver, accion, datos)
 
         #escribir labels
         self.url_label.configure(text=f"URL: {url}")

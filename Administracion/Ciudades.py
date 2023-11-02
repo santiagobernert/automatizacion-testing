@@ -17,7 +17,7 @@ class Ciudades:
         "Código Postal": "0123",
         }
         if datos_modificados:
-            for (k,v) in datos.items():
+            for (k,v) in datos_modificados.items():
                 datos[k] = v
        #desplegar el menu administracion
         driver.find_element(By.XPATH, '//span[text()="Administración"]').click() 

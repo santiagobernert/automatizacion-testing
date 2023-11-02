@@ -29,7 +29,7 @@ class Transporte:
         "Medlog charge code": "abcd12",
         }
         if datos_modificados:
-            for (k,v) in datos.items():
+            for (k,v) in datos_modificados.items():
                 datos[k] = v
         for (campo, valor) in datos.items():
             if valor == 'blanco':
